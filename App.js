@@ -6,100 +6,16 @@
  * @flow strict-local
  */
 
-import React from 'react';
-import { createStackNavigator, TransitionPresets, CardStyleInterpolators } from '@react-navigation/stack'
+import React, { useEffect } from 'react';
+import { createStackNavigator } from '@react-navigation/stack'
 import { NavigationContainer } from '@react-navigation/native'
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { StyleSheet, Text, View, Button, Easing } from "react-native"
-
-import { useIsFocused } from "@react-navigation/core";
-
-import Ionicons from 'react-native-vector-icons/Ionicons'
+import SettingsScreen from './src/module/settings/SettingsScreen'
+import TabNavigator from './src/navigation/TabNavigator'
+// import firebase from 'react-native-firebase'
 
 
 const Stack = createStackNavigator()
-const Tab = createBottomTabNavigator()
-const HomeStack = createStackNavigator()
-
-const HomeScreen = ({ navigation }) => {
-  // navigation.setOptions({
-  //   headerRight: () => (
-  //     <Button
-  //       title="Save"
-  //       onPress={() => {
-  //         //save the changes
-  //         navigation.replace("Home");
-  //       }}
-  //     />
-  //   )
-  // });
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>HomeScreen</Text>
-      <Button title="Go To Details Screen" onPress={() => navigation.navigate("Details")} />
-    </View>
-  )
-}
-
-const SettingsScreen = ({ navigation }) => {
-  const isFocused = useIsFocused();
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text style={{ color: isFocused ? "green" : "black" }}>SettingsScreen</Text>
-      <Button title="Go To Home Screen" onPress={() => navigation.goBack()} />
-    </View>
-  );
-};
-
-const FeedScreen = props => (
-  <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-    <Text>FeedScreen</Text>
-  </View>
-);
-
-const DetailsScreen = props => (
-  <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-    <Text>DetailsScreen</Text>
-  </View>
-);
-
-const HomeStackNavigator = ({ navigation, route }) => {
-  if (route.state) {
-    navigation.setOptions({
-      tabBarVisible: route.state.index > 0 ? false : true
-    });
-  }
-  return (
-    <HomeStack.Navigator>
-      <HomeStack.Screen name="Home" component={HomeScreen} />
-      <HomeStack.Screen name="Details" component={DetailsScreen} />
-    </HomeStack.Navigator>
-  );
-};
-
-const HomeTabNavigator = ({ navigation, route }) => {
-  return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          let iconName;
-          if (route.name == "Home") {
-            iconName = "home";
-          } else if (route.name == "Feed") {
-            iconName = "filter";
-          } else if (route.name == "Settings") {
-            iconName = "settings";
-          }
-          return <Ionicons name={iconName} size={size} color={color}/>
-        }
-      })}
-    >
-      <Tab.Screen name="Home" component={HomeStackNavigator} />
-      <Tab.Screen name="Feed" component={FeedScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
-    </Tab.Navigator>
-  )
-}
 
 const config = {
   animation: "spring",
@@ -127,8 +43,8 @@ function getHeaderTitle(route) {
   switch (routeName) {
     case "Home":
       return "Home";
-    case "Feed":
-      return "Feed";
+    case "Upload":
+      return "Upload";
     case "Settings":
       return "Settings";
   }
@@ -143,17 +59,30 @@ function shouldHeaderBeShown(route) {
 }
 
 export default function App() {
+
+  // useEffect(() => {
+  //   var firebaseConfig = {
+  //     apiKey: "AIzaSyAbxzn5x25WrlIINwZUl3Vh1N2otUGAgg8",
+  //     authDomain: "comic-4fc61.firebaseapp.com",
+  //     projectId: "comic-4fc61",
+  //     storageBucket: "comic-4fc61.appspot.com",
+  //     messagingSenderId: "264633274607",
+  //     appId: "1:264633274607:web:bd679fe52578d99160cb1a",
+  //     measurementId: "G-03LR5D1KW2"
+  //   };
+  //   // Initialize Firebase
+  //   firebase.initializeApp(firebaseConfig);
+  //   firebase.analytics();
+    
+  // })
+
   return (
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
           gestureEnabled: true,
           gestureDirection: "horizontal",
-          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
-          // transitionSpec: {
-          //   open: config,
-          //   close: closeConfig
-          // }
+
         }}
         headerMode="float"
         animation="fade"
@@ -164,9 +93,9 @@ export default function App() {
             headerShown: shouldHeaderBeShown(route)
           })}
           name="Home"
-          component={HomeTabNavigator}
+          component={TabNavigator}
         />
-        <Stack.Screen name="Settings" component={SettingsScreen} />
+        {/* <Stack.Screen name="Settings" component={SettingsScreen} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   )
